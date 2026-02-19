@@ -1,0 +1,70 @@
+# Frontend for Qwen2.5-72B (on cp17 with hostNetwork)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamo-frontend
+  namespace: dynamo-qwen
+  labels:
+    app: dynamo-frontend
+spec:
+  restartPolicy: Always
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp17
+  containers:
+  - name: frontend
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["python3", "-m", "dynamo.frontend"]
+    args:
+    - --http-port
+    - "8080"
+    - --router-mode
+    - round-robin
+    ports:
+    - containerPort: 8080
+      name: http
+      hostPort: 8080
+    env:
+    - name: ETCD_ENDPOINTS
+      value: "172.29.22.14:2379,172.29.202.242:2379,172.29.134.203:2379"
+    - name: NATS_SERVER
+      value: "nats://172.29.182.124:4222"
+    - name: DYN_LOG
+      value: "info"
+    - name: DYNAMO_MODEL_NAMESPACE
+      value: "qwen"
+    - name: HF_HOME
+      value: /data/huggingface
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    resources:
+      requests:
+        cpu: "1"
+        memory: "4Gi"
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dynamo-frontend
+  namespace: dynamo-qwen
+spec:
+  selector:
+    app: dynamo-frontend
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000

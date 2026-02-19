@@ -1,0 +1,433 @@
+---
+# Engine config for TRT-LLM (Qwen3-8B aggregated mode with KVBM)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trtllm-engine-config
+  namespace: dynamo-qwen
+data:
+  agg.yaml: |
+    tensor_parallel_size: 1
+    moe_expert_parallel_size: 1
+    enable_attention_dp: false
+    max_num_tokens: 8192
+    max_batch_size: 16
+    trust_remote_code: true
+    backend: pytorch
+    enable_chunked_prefill: true
+    kv_cache_config:
+      free_gpu_memory_fraction: 0.02
+      enable_partial_reuse: false
+    cuda_graph_config:
+      max_batch_size: 16
+---
+# 3FS FUSE launcher config for cp16
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fuse-launcher-config
+  namespace: dynamo-qwen
+data:
+  hf3fs_fuse_main_launcher.toml: |
+    allow_other = true
+    cluster_id = 'ipoib'
+    mountpoint = '/mnt/3fs-root/3fs'
+    token_file = '/etc/3fs-token/token'
+
+    [client]
+    default_compression_level = 0
+    default_compression_threshold = '128KB'
+    default_log_long_running_threshold = '0ns'
+    default_report_metrics = false
+    default_send_retry_times = 1
+    default_timeout = '1s'
+    enable_rdma_control = false
+    force_use_tcp = true
+
+    [client.io_worker]
+    num_event_loop = 1
+    rdma_connect_timeout = '5s'
+    read_write_rdma_in_event_thread = false
+    read_write_tcp_in_event_thread = false
+    tcp_connect_timeout = '1s'
+    wait_to_retry_send = '100ms'
+
+    [client.io_worker.connect_concurrency_limiter]
+    max_concurrency = 4
+
+    [client.io_worker.ibsocket]
+    buf_ack_batch = 8
+    buf_signal_batch = 8
+    buf_size = 16384
+    drain_timeout = '5s'
+    drop_connections = 0
+    event_ack_batch = 128
+    max_rd_atomic = 16
+    max_rdma_wr = 128
+    max_rdma_wr_per_post = 32
+    max_sge = 1
+    min_rnr_timer = 1
+    record_bytes_per_peer = false
+    record_latency_per_peer = false
+    retry_cnt = 7
+    rnr_retry = 0
+    send_buf_cnt = 32
+    sl = 0
+    start_psn = 0
+    timeout = 14
+
+    [client.io_worker.transport_pool]
+    max_connections = 1
+
+    [client.processor]
+    enable_coroutines_pool = true
+    max_coroutines_num = 256
+    max_processing_requests_num = 4096
+    response_compression_level = 1
+    response_compression_threshold = '128KB'
+
+    [client.rdma_control]
+    max_concurrent_transmission = 64
+
+    [client.thread_pool]
+    bg_thread_pool_stratetry = 'SHARED_QUEUE'
+    collect_stats = false
+    enable_work_stealing = false
+    io_thread_pool_stratetry = 'SHARED_QUEUE'
+    num_bg_threads = 2
+    num_connect_threads = 2
+    num_io_threads = 2
+    num_proc_threads = 2
+    proc_thread_pool_stratetry = 'SHARED_QUEUE'
+
+    [ib_devices]
+    allow_no_usable_devices = false
+    allow_unknown_zone = true
+    default_network_zone = 'UNKNOWN'
+    default_pkey_index = 1
+    default_roce_pkey_index = 0
+    default_traffic_class = 0
+    device_filter = ["mlx5_0"]
+    fork_safe = true
+    prefer_ibdevice = true
+    skip_inactive_ports = true
+    skip_unusable_device = true
+    subnets = []
+
+    [mgmtd_client]
+    accept_incomplete_routing_info_during_mgmtd_bootstrapping = true
+    auto_extend_client_session_interval = '10s'
+    auto_heartbeat_interval = '10s'
+    auto_refresh_interval = '10s'
+    enable_auto_extend_client_session = false
+    enable_auto_heartbeat = true
+    enable_auto_refresh = true
+    mgmtd_server_addresses = ["RDMA://10.2.10.55:8010"]
+    work_queue_size = 100
+---
+# 3FS FDB cluster file
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fdb-config
+  namespace: dynamo-qwen
+data:
+  fdb.cluster: "a1b2c3d4e5:f6a7b8c9d0@10.2.10.55:4510"
+---
+# 3FS token
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: threefs-token
+  namespace: dynamo-qwen
+data:
+  token: "AADe6qLY8QCIaGzg2wDlGTAJ"
+---
+# Dynamo Frontend
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamo-frontend
+  namespace: dynamo-qwen
+  labels:
+    app: dynamo-frontend
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp16
+  containers:
+  - name: frontend
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["python3", "-m", "dynamo.frontend"]
+    args:
+    - --http-port
+    - "8000"
+    - --router-mode
+    - round-robin
+    ports:
+    - containerPort: 8000
+      name: http
+    env:
+    - name: ETCD_ENDPOINTS
+      value: "etcd-headless.baseten:2379"
+    - name: NATS_SERVER
+      value: "nats://nats-headless.baseten:4222"
+    - name: DYN_LOG
+      value: "info"
+    - name: DYNAMO_MODEL_NAMESPACE
+      value: "qwen"
+    - name: HF_HOME
+      value: /data/huggingface
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    resources:
+      requests:
+        cpu: "1"
+        memory: "4Gi"
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dynamo-frontend
+  namespace: dynamo-qwen
+spec:
+  selector:
+    app: dynamo-frontend
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+---
+# Dynamo TensorRT-LLM Worker with 3FS FUSE sidecar and KVBM
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamo-worker
+  namespace: dynamo-qwen
+  labels:
+    app: dynamo-worker
+spec:
+  restartPolicy: Never
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  securityContext:
+    runAsUser: 0
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp17
+  # Init container: prepare 3FS mount point and wait for FUSE
+  initContainers:
+  - name: prepare-3fs
+    image: busybox:1.36
+    command: ["sh", "-c"]
+    args:
+    - |
+      mkdir -p /mnt/3fs
+      mkdir -p /mnt/3fs-root
+      echo "Mount points prepared"
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: 3fs-mount
+      mountPath: /mnt/3fs-root
+      mountPropagation: Bidirectional
+  containers:
+  # Sidecar: 3FS FUSE daemon
+  - name: fuse-sidecar
+    image: basetenandyj/3fs-runtime:arm64-64k-v6
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -e
+      ulimit -n 524288
+      ulimit -l unlimited
+
+      # Prepare mount point
+      mkdir -p /mnt/3fs-root/3fs
+
+      # Symlink fusermount3
+      ln -sf /usr/bin/fusermount /usr/bin/fusermount3 2>/dev/null || true
+
+      echo "Starting 3FS FUSE daemon..."
+      /opt/3fs/bin/hf3fs_fuse_main \
+        --launcher_cfg /etc/3fs-fuse/hf3fs_fuse_main_launcher.toml \
+        --mountpoint /mnt/3fs-root/3fs &
+      FUSE_PID=$!
+      echo "FUSE PID: $FUSE_PID"
+
+      # Wait for mount
+      for i in $(seq 1 30); do
+        if mountpoint -q /mnt/3fs-root/3fs 2>/dev/null; then
+          echo "3FS mounted successfully at /mnt/3fs-root/3fs"
+          # Create KVBM cache directory
+          mkdir -p /mnt/3fs-root/3fs/kvbm_cache
+          echo "KVBM cache directory created"
+          break
+        fi
+        echo "Waiting for FUSE mount... ($i/30)"
+        sleep 2
+      done
+
+      if ! mountpoint -q /mnt/3fs-root/3fs 2>/dev/null; then
+        echo "ERROR: FUSE mount failed after 60s"
+        exit 1
+      fi
+
+      # Keep running
+      wait $FUSE_PID
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: 3fs-mount
+      mountPath: /mnt/3fs-root
+      mountPropagation: Bidirectional
+    - name: fuse-launcher
+      mountPath: /etc/3fs-fuse
+    - name: fdb-cluster
+      mountPath: /etc/3fs-fdb
+    - name: infiniband
+      mountPath: /dev/infiniband
+    - name: fuse-dev
+      mountPath: /dev/fuse
+    - name: threefs-token
+      mountPath: /etc/3fs-token
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "2"
+      limits:
+        memory: "4Gi"
+        cpu: "4"
+  # Main: TRT-LLM Worker with KVBM
+  - name: worker
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -e
+      echo "Waiting for 3FS mount..."
+      for i in $(seq 1 60); do
+        if [ -d /mnt/3fs-root/3fs/kvbm_cache ]; then
+          echo "3FS is available at /mnt/3fs-root/3fs"
+          ls -la /mnt/3fs-root/3fs/
+          break
+        fi
+        echo "Waiting for 3FS... ($i/60)"
+        sleep 2
+      done
+
+      if [ ! -d /mnt/3fs-root/3fs/kvbm_cache ]; then
+        echo "WARNING: 3FS not mounted, starting without disk cache"
+      fi
+
+      echo "Starting TRT-LLM worker with KVBM..."
+      exec python3 -m dynamo.trtllm \
+        --model-path /data/huggingface/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218 \
+        --served-model-name Qwen/Qwen3-8B \
+        --modality text \
+        --extra-engine-args /etc/dynamo/agg.yaml \
+        --connector kvbm
+    ports:
+    - containerPort: 8081
+      name: metrics
+      hostPort: 8081
+    env:
+    - name: ETCD_ENDPOINTS
+      value: "172.29.22.14:2379,172.29.202.242:2379,172.29.134.203:2379"
+    - name: NATS_SERVER
+      value: "nats://172.29.182.124:4222"
+    - name: DYN_SYSTEM_PORT
+      value: "8081"
+    - name: HF_HOME
+      value: /data/huggingface
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    - name: DYN_LOG
+      value: "info"
+    - name: DYNAMO_MODEL_NAMESPACE
+      value: "qwen"
+    # KVBM Configuration
+    - name: DYN_KVBM_CPU_CACHE_GB
+      value: "20"
+    - name: DYN_KVBM_DISK_CACHE_GB
+      value: "50"
+    - name: DYN_KVBM_DISK_CACHE_DIR
+      value: "/mnt/3fs-root/3fs/kvbm_cache"
+    - name: DYN_KVBM_METRICS
+      value: "true"
+    # 3FS via FUSE may not support O_DIRECT or fallocate
+    - name: DYN_KVBM_DISK_DISABLE_O_DIRECT
+      value: "true"
+    - name: DYN_KVBM_DISK_ZEROFILL_FALLBACK
+      value: "true"
+    resources:
+      requests:
+        cpu: "4"
+        memory: "32Gi"
+        nvidia.com/gpu: "1"
+      limits:
+        cpu: "16"
+        memory: "64Gi"
+        nvidia.com/gpu: "1"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    - name: shm
+      mountPath: /dev/shm
+    - name: engine-config
+      mountPath: /etc/dynamo
+    - name: 3fs-mount
+      mountPath: /mnt/3fs-root
+      mountPropagation: HostToContainer
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 16Gi
+  - name: engine-config
+    configMap:
+      name: trtllm-engine-config
+  - name: 3fs-mount
+    hostPath:
+      path: /tmp/dynamo-3fs-mount
+      type: DirectoryOrCreate
+  - name: fuse-launcher
+    configMap:
+      name: fuse-launcher-config
+  - name: fdb-cluster
+    configMap:
+      name: fdb-config
+  - name: infiniband
+    hostPath:
+      path: /dev/infiniband
+      type: Directory
+  - name: fuse-dev
+    hostPath:
+      path: /dev/fuse
+      type: CharDevice
+  - name: threefs-token
+    configMap:
+      name: threefs-token
+  tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule

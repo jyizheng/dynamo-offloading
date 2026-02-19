@@ -1,0 +1,120 @@
+---
+# Engine config for Qwen2.5-72B-Instruct (baseline, no KVBM)
+# 72B BF16 weights ~145GB, GB200 189GB → ~44GB for KV cache
+# At 320KB/token → ~137K tokens max (with 0.80 fraction → ~109K tokens)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trtllm-engine-config-72b
+  namespace: dynamo-qwen
+data:
+  agg.yaml: |
+    tensor_parallel_size: 1
+    moe_expert_parallel_size: 1
+    enable_attention_dp: false
+    max_num_tokens: 4096
+    max_batch_size: 8
+    trust_remote_code: true
+    backend: pytorch
+    enable_chunked_prefill: true
+    kv_cache_config:
+      free_gpu_memory_fraction: 0.80
+      enable_partial_reuse: false
+    cuda_graph_config:
+      max_batch_size: 8
+---
+# Baseline Worker: Qwen2.5-72B-Instruct, NO KVBM
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamo-worker-72b
+  namespace: dynamo-qwen
+  labels:
+    app: dynamo-worker
+spec:
+  restartPolicy: Never
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  securityContext:
+    runAsUser: 0
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp17
+  containers:
+  - name: worker
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -e
+
+      # Find the model snapshot directory
+      MODEL_DIR=$(ls -d /data/huggingface/hub/models--Qwen--Qwen2.5-72B-Instruct/snapshots/*/ 2>/dev/null | head -1)
+      if [ -z "$MODEL_DIR" ]; then
+        echo "ERROR: Qwen2.5-72B-Instruct model not found!"
+        exit 1
+      fi
+      echo "Model directory: $MODEL_DIR"
+      echo "Model files:"
+      ls "$MODEL_DIR"/*.safetensors 2>/dev/null | wc -l
+      echo "safetensor files found"
+
+      echo "Starting TRT-LLM worker (Qwen2.5-72B-Instruct baseline, no KVBM)..."
+      exec python3 -m dynamo.trtllm \
+        --model-path "$MODEL_DIR" \
+        --served-model-name Qwen/Qwen2.5-72B-Instruct \
+        --modality text \
+        --extra-engine-args /etc/dynamo/agg.yaml \
+        --connector none
+    ports:
+    - containerPort: 8081
+      name: metrics
+      hostPort: 8081
+    env:
+    - name: ETCD_ENDPOINTS
+      value: "172.29.22.14:2379,172.29.202.242:2379,172.29.134.203:2379"
+    - name: NATS_SERVER
+      value: "nats://172.29.182.124:4222"
+    - name: DYN_SYSTEM_PORT
+      value: "8081"
+    - name: HF_HOME
+      value: /data/huggingface
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    - name: DYN_LOG
+      value: "info"
+    - name: DYNAMO_MODEL_NAMESPACE
+      value: "qwen"
+    resources:
+      requests:
+        cpu: "8"
+        memory: "200Gi"
+        nvidia.com/gpu: "1"
+      limits:
+        cpu: "32"
+        memory: "256Gi"
+        nvidia.com/gpu: "1"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    - name: shm
+      mountPath: /dev/shm
+    - name: engine-config
+      mountPath: /etc/dynamo
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 16Gi
+  - name: engine-config
+    configMap:
+      name: trtllm-engine-config-72b
+  tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule

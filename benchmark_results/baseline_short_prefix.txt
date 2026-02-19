@@ -1,0 +1,5 @@
+=== Baseline (no KVBM) - Short prefix (~150 tokens) ===
+Round 1 (Cold): avg=32.8ms  p50=32.8ms
+Round 2 (Warm): avg=32.6ms  p50=32.6ms
+Round 3 (Hot):  avg=32.4ms  p50=32.3ms
+TTFT improvement: 0ms (1.2%) - No prefix caching

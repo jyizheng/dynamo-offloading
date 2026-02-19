@@ -1,0 +1,89 @@
+# Benchmark Pod: runs LongBench2 against the Dynamo frontend
+# Uses dnsPolicy: Default for internet access (dataset download)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: benchmark
+  namespace: dynamo-qwen
+spec:
+  restartPolicy: Never
+  hostNetwork: true
+  dnsPolicy: Default
+  securityContext:
+    runAsUser: 0
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp17
+  containers:
+  - name: bench
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -e
+      export HF_HOME=/data/huggingface
+
+      # Clone LongBench
+      cd /workspace
+      if [ ! -d LongBench ]; then
+        git clone --depth 1 https://github.com/THUDM/LongBench.git
+      fi
+
+      # Add Qwen2.5-72B-Instruct to config if not present
+      cd LongBench
+      python3 -c "
+      import json
+      # model2path
+      with open('config/model2path.json') as f:
+          m = json.load(f)
+      m['Qwen2.5-72B-Instruct'] = 'Qwen/Qwen2.5-72B-Instruct'
+      with open('config/model2path.json', 'w') as f:
+          json.dump(m, f, indent=4)
+      # model2maxlen
+      with open('config/model2maxlen.json') as f:
+          m = json.load(f)
+      m['Qwen2.5-72B-Instruct'] = 120000
+      with open('config/model2maxlen.json', 'w') as f:
+          json.dump(m, f, indent=4)
+      print('Config updated')
+      "
+
+      # Pre-download dataset
+      python3 -c "
+      from datasets import load_dataset
+      ds = load_dataset('THUDM/LongBench-v2', split='train')
+      print(f'Dataset loaded: {len(ds)} examples')
+      print(f'Length distribution:')
+      lengths = [item['length'] for item in ds]
+      for bucket in ['0-32k', '32k-128k', '128k+']:
+          if bucket == '0-32k':
+              count = sum(1 for l in lengths if l.startswith(('8', '1', '2', '3')))
+          elif bucket == '32k-128k':
+              count = sum(1 for l in lengths if l.startswith(('6', '4', '5')))
+          else:
+              count = sum(1 for l in lengths if l.startswith(('1', '2')) and len(l) > 4)
+      "
+
+      echo "Benchmark pod ready. Use kubectl exec to run benchmarks."
+      echo "Example: python3 pred.py --model Qwen2.5-72B-Instruct --n_proc 1"
+      sleep 86400
+    resources:
+      requests:
+        cpu: "4"
+        memory: "16Gi"
+      limits:
+        cpu: "16"
+        memory: "32Gi"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    - name: workspace
+      mountPath: /workspace
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+  - name: workspace
+    hostPath:
+      path: /data/benchmark-workspace
+      type: DirectoryOrCreate

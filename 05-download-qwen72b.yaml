@@ -1,0 +1,56 @@
+# Download Pod: Qwen2.5-72B to cp17
+# Uses hostNetwork for internet access + hostPath for persistent storage
+apiVersion: v1
+kind: Pod
+metadata:
+  name: model-downloader
+  namespace: dynamo-qwen
+spec:
+  restartPolicy: Never
+  hostNetwork: true
+  dnsPolicy: Default
+  securityContext:
+    runAsUser: 0
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp17
+  containers:
+  - name: downloader
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -e
+      echo "=== Downloading Qwen/Qwen2.5-72B-Instruct ==="
+      echo "Start time: $(date)"
+      export HF_HOME=/data/huggingface
+
+      # Download the model
+      huggingface-cli download Qwen/Qwen2.5-72B-Instruct \
+        --local-dir-use-symlinks True \
+        --resume-download
+
+      echo ""
+      echo "=== Download complete ==="
+      echo "End time: $(date)"
+      echo "Model location:"
+      ls -la /data/huggingface/hub/models--Qwen--Qwen2.5-72B/snapshots/ 2>/dev/null || echo "Check path"
+      du -sh /data/huggingface/hub/models--Qwen--Qwen2.5-72B/ 2>/dev/null
+
+      # Keep pod alive for inspection
+      echo "Download finished. Pod will stay alive for 1 hour."
+      sleep 3600
+    resources:
+      requests:
+        cpu: "2"
+        memory: "4Gi"
+      limits:
+        cpu: "8"
+        memory: "8Gi"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate

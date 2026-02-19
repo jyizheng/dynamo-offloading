@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamo-qwen3-8b
+  namespace: dynamo-qwen
+  labels:
+    app: dynamo-qwen3-8b
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsUser: 0
+  nodeSelector:
+    kubernetes.io/hostname: p02-r02-cp16
+  containers:
+  - name: dynamo
+    image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:0.9.0-cuda13
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      set -ex
+      echo "=== GPU Info ==="
+      nvidia-smi
+
+      # Clean stale file store from previous run
+      rm -rf /tmp/dynamo_store_kv
+
+      echo "=== Starting Frontend ==="
+      python3 -m dynamo.frontend --http-port 8000 &
+      FRONTEND_PID=$!
+      sleep 3
+
+      echo "=== Starting vLLM Worker ==="
+      DYN_SYSTEM_PORT=8081 \
+      python3 -m dynamo.vllm \
+        --model Qwen/Qwen3-8B \
+        --enforce-eager \
+        --connector none \
+        --max-model-len 4096 \
+        --gpu-memory-utilization 0.9
+    ports:
+    - containerPort: 8000
+      name: http
+      protocol: TCP
+    - containerPort: 8081
+      name: metrics
+      protocol: TCP
+    env:
+    - name: HF_HOME
+      value: /data/huggingface
+    - name: DYN_LOG
+      value: "info"
+    - name: DYN_STORE_KV
+      value: "file"
+    - name: DYN_REQUEST_PLANE
+      value: "tcp"
+    - name: DYN_EVENT_PLANE
+      value: "zmq"
+    resources:
+      requests:
+        cpu: "4"
+        memory: "32Gi"
+        nvidia.com/gpu: "1"
+      limits:
+        cpu: "16"
+        memory: "64Gi"
+        nvidia.com/gpu: "1"
+    volumeMounts:
+    - name: hf-cache
+      mountPath: /data/huggingface
+    - name: shm
+      mountPath: /dev/shm
+  volumes:
+  - name: hf-cache
+    hostPath:
+      path: /data/huggingface
+      type: DirectoryOrCreate
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 16Gi
+  tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule
