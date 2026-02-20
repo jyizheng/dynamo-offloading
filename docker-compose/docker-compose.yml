@@ -1,0 +1,134 @@
+services:
+  # ---- Infrastructure ----
+  etcd:
+    image: bitnamilegacy/etcd:3.6.1
+    container_name: dynamo-etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    restart: always
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nats:
+    image: nats:2.11.4
+    container_name: dynamo-nats
+    command: ["-c", "/etc/nats/nats-server.conf"]
+    volumes:
+      - ./nats-server.conf:/etc/nats/nats-server.conf:ro
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    restart: always
+
+  # ---- Dynamo Worker (TRT-LLM + KVBM) ----
+  worker:
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    container_name: dynamo-worker
+    depends_on:
+      etcd:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    network_mode: host
+    ipc: host
+    privileged: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["2"]
+              capabilities: [gpu]
+    devices:
+      - /dev/nvidia-fs0:/dev/nvidia-fs0
+    volumes:
+      - /root/.cache/huggingface:/data/huggingface
+      - ./agg.yaml:/etc/dynamo/agg.yaml:ro
+      - /mnt/nvme/kvbm_cache:/tmp/kvbm_disk_cache
+      - shm:/dev/shm
+    environment:
+      - ETCD_ENDPOINTS=127.0.0.1:2379
+      - NATS_SERVER=nats://127.0.0.1:4222
+      - DYN_SYSTEM_PORT=8081
+      - HF_HOME=/data/huggingface
+      - HF_HUB_OFFLINE=1
+      - TRANSFORMERS_OFFLINE=1
+      - DYN_LOG=info
+      - DYNAMO_MODEL_NAMESPACE=qwen
+      # KVBM Configuration
+      - DYN_KVBM_CPU_CACHE_GB=0
+      - DYN_KVBM_DISK_CACHE_GB=10
+      - DYN_KVBM_DISK_CACHE_DIR=/tmp/kvbm_disk_cache
+      - DYN_KVBM_METRICS=true
+      - DYN_KVBM_DISABLE_DISK_OFFLOAD_FILTER=true
+      # Memory optimization
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+      # UCX workaround: use TCP for MPI instead of IB (avoids mlx5 device mismatch)
+      - UCX_TLS=tcp,cuda_copy,cuda_ipc,self
+      - UCX_NET_DEVICES=all
+      - OMPI_MCA_btl=tcp,self
+      - OMPI_MCA_pml=ucx
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        mkdir -p /tmp/kvbm_disk_cache
+
+        echo "Waiting for etcd..."
+        for i in $$(seq 1 30); do
+          if python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:2379/version')" 2>/dev/null; then
+            echo "etcd is ready"
+            break
+          fi
+          echo "Waiting for etcd... ($$i/30)"
+          sleep 2
+        done
+
+        echo "Starting TRT-LLM worker with KVBM (local disk cache)..."
+        exec python3 -m dynamo.trtllm \
+          --model-path /data/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca \
+          --served-model-name Qwen/Qwen3-0.6B \
+          --modality text \
+          --extra-engine-args /etc/dynamo/agg.yaml \
+          --connector kvbm
+
+  # ---- Dynamo Frontend (HTTP API) ----
+  frontend:
+    image: nvcr.io/nvidia/ai-dynamo/tensorrtllm-runtime:0.9.0
+    container_name: dynamo-frontend
+    depends_on:
+      etcd:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    network_mode: host
+    volumes:
+      - /root/.cache/huggingface:/data/huggingface
+    environment:
+      - ETCD_ENDPOINTS=127.0.0.1:2379
+      - NATS_SERVER=nats://127.0.0.1:4222
+      - DYN_LOG=info
+      - DYNAMO_MODEL_NAMESPACE=qwen
+      - HF_HOME=/data/huggingface
+      - HF_HUB_OFFLINE=1
+      - TRANSFORMERS_OFFLINE=1
+    entrypoint: ["python3", "-m", "dynamo.frontend"]
+    command:
+      - --http-port
+      - "8000"
+      - --router-mode
+      - round-robin
+    restart: always
+
+volumes:
+  shm:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=16g
