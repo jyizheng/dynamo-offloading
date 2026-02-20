@@ -86,3 +86,257 @@
  19-02-2026 20:48:30:116 [pid=538602 tid=538602] ERROR  cufio-obj:242 unable to get volume attributes for fd 3
  19-02-2026 20:48:30:116 [pid=538602 tid=538602] ERROR  cufio:311 cuFileHandleRegister error, failed to allocate file object
  19-02-2026 20:48:30:116 [pid=538602 tid=538602] ERROR  cufio:339 cuFileHandleRegister error: internal error
+ 20-02-2026 10:52:41:487 [pid=474 tid=474] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 10:52:41:487 [pid=474 tid=474] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 10:52:43:275 [pid=474 tid=486] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:275 [pid=474 tid=496] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:275 [pid=474 tid=513] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:275 [pid=474 tid=488] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=502] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=484] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=493] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=485] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=489] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=497] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=492] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=482] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=504] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=501] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=483] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=487] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=505] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=510] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=509] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=512] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=490] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=500] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=491] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:276 [pid=474 tid=495] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=498] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=503] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=506] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=494] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=499] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=508] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=507] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:277 [pid=474 tid=511] ERROR  0:58 NUMA not available
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 10:52:43:299 [pid=474 tid=474] ERROR  cufio-obj:242 unable to get volume attributes for fd 3
+ 20-02-2026 10:52:43:300 [pid=474 tid=474] ERROR  cufio:311 cuFileHandleRegister error, failed to allocate file object
+ 20-02-2026 10:52:43:300 [pid=474 tid=474] ERROR  cufio:339 cuFileHandleRegister error: internal error
+ 20-02-2026 10:53:35:189 [pid=549 tid=549] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 10:53:35:189 [pid=549 tid=549] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 10:53:36:914 [pid=549 tid=562] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:914 [pid=549 tid=570] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:914 [pid=549 tid=578] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:914 [pid=549 tid=586] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=561] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=558] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=566] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=580] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=585] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=560] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=568] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=559] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=564] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:995 [pid=549 tid=557] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=565] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=576] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=573] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=567] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=575] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=572] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=581] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=574] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=584] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=569] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=582] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=583] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=588] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:36:996 [pid=549 tid=577] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:37:19 [pid=549 tid=563] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:37:19 [pid=549 tid=571] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:37:19 [pid=549 tid=579] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:37:19 [pid=549 tid=587] ERROR  0:58 NUMA not available
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio-obj:242 unable to get volume attributes for fd 3
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio:311 cuFileHandleRegister error, failed to allocate file object
+ 20-02-2026 10:53:37:106 [pid=549 tid=549] ERROR  cufio:339 cuFileHandleRegister error: internal error
+ 20-02-2026 11:34:45:519 [pid=1217 tid=1217] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 11:34:45:519 [pid=1217 tid=1217] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 11:34:47:122 [pid=1217 tid=1226] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:122 [pid=1217 tid=1250] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:122 [pid=1217 tid=1242] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:122 [pid=1217 tid=1234] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:130 [pid=1217 tid=1227] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:130 [pid=1217 tid=1235] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:130 [pid=1217 tid=1243] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:130 [pid=1217 tid=1251] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1231] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1238] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1247] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1230] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1239] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:231 [pid=1217 tid=1225] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:233 [pid=1217 tid=1246] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:234 [pid=1217 tid=1255] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:234 [pid=1217 tid=1233] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:234 [pid=1217 tid=1241] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:234 [pid=1217 tid=1254] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:234 [pid=1217 tid=1249] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:241 [pid=1217 tid=1229] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:241 [pid=1217 tid=1237] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:241 [pid=1217 tid=1245] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:241 [pid=1217 tid=1253] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:249 [pid=1217 tid=1228] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:249 [pid=1217 tid=1236] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:249 [pid=1217 tid=1244] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:249 [pid=1217 tid=1252] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:259 [pid=1217 tid=1232] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:259 [pid=1217 tid=1240] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:259 [pid=1217 tid=1248] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:259 [pid=1217 tid=1256] ERROR  0:58 NUMA not available
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio-obj:242 unable to get volume attributes for fd 3
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio:311 cuFileHandleRegister error, failed to allocate file object
+ 20-02-2026 11:34:47:340 [pid=1217 tid=1217] ERROR  cufio:339 cuFileHandleRegister error: internal error
+ 20-02-2026 12:06:29:128 [pid=7275 tid=7275] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 12:06:29:128 [pid=7275 tid=7275] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 12:06:29:129 [pid=7275 tid=7287] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:29:129 [pid=7275 tid=7295] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:29:129 [pid=7275 tid=7303] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:29:130 [pid=7275 tid=7311] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7294] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7289] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7298] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7297] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7310] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7305] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:631 [pid=7275 tid=7318] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7293] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7290] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7313] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7301] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7292] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7302] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7306] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7291] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7300] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7309] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7299] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7308] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7314] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7317] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7307] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7315] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:632 [pid=7275 tid=7316] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:645 [pid=7275 tid=7288] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:645 [pid=7275 tid=7296] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:645 [pid=7275 tid=7304] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:645 [pid=7275 tid=7312] ERROR  0:58 NUMA not available
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio-udev:67 udev property not found: ID_FS_USAGE nvme7n1p2
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio-fs:759 error getting volume attributes error for device: dev_no: 259:31
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio-obj:242 unable to get volume attributes for fd 258
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio:311 cuFileHandleRegister error, failed to allocate file object
+ 20-02-2026 12:06:30:740 [pid=7275 tid=7275] ERROR  cufio:339 cuFileHandleRegister error: internal error
+ 20-02-2026 12:07:49:180 [pid=7516 tid=7516] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 12:07:49:180 [pid=7516 tid=7516] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 12:07:49:180 [pid=7516 tid=7525] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:49:181 [pid=7516 tid=7533] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:49:181 [pid=7516 tid=7541] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:49:181 [pid=7516 tid=7549] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:431 [pid=7516 tid=7531] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:431 [pid=7516 tid=7547] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7539] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7555] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7530] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7554] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7538] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7532] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7540] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7546] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7548] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:432 [pid=7516 tid=7556] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7527] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7535] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7543] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7551] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7528] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7536] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7544] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7552] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7529] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7537] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7545] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:433 [pid=7516 tid=7553] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:468 [pid=7516 tid=7526] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:468 [pid=7516 tid=7534] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:468 [pid=7516 tid=7542] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:468 [pid=7516 tid=7550] ERROR  0:58 NUMA not available
+ 20-02-2026 12:07:51:503 [pid=7516 tid=7516] ERROR  cufio-fs:204 NVMe Driver not registered with nvidia-fs!!!
+ 20-02-2026 12:07:51:504 [pid=7516 tid=7516] ERROR  cufio-fs:79 mount option not found in mount table data device: /dev/nvme7n1p2
+ 20-02-2026 12:07:51:504 [pid=7516 tid=7516] ERROR  cufio-fs:204 NVMe Driver not registered with nvidia-fs!!!
+ 20-02-2026 12:07:51:504 [pid=7516 tid=7516] NOTICE  cufio-fs:451 dumping volume attributes: DEVNAME:/dev/nvme7n1p2,ID_FS_TYPE:ext4,ID_FS_USAGE:filesystem,fsid:8e81b9f765cf410d0x,numa_node:-1,queue/logical_block_size:4096,wwid:eui.37393430589050770025384300000001,
+ 20-02-2026 12:07:51:504 [pid=7516 tid=7516] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 12:07:51:505 [pid=7516 tid=7516] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:25:788 [pid=7655 tid=7655] ERROR  0:140 unable to load,  libnuma.so.1.0.0 
+
+ 20-02-2026 12:08:25:788 [pid=7655 tid=7655] ERROR  0:98 dlopen error libnuma.so.1.0.0: cannot open shared object file: No such file or directory
+ 20-02-2026 12:08:25:788 [pid=7655 tid=7664] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:25:790 [pid=7655 tid=7672] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:25:790 [pid=7655 tid=7680] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:25:790 [pid=7655 tid=7688] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:903 [pid=7655 tid=7668] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:903 [pid=7655 tid=7676] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:903 [pid=7655 tid=7684] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:906 [pid=7655 tid=7692] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:967 [pid=7655 tid=7671] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7679] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7666] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7687] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7674] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7667] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7665] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7695] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7670] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:969 [pid=7655 tid=7682] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7678] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7673] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7675] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7690] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7683] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7686] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7681] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7694] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7691] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:970 [pid=7655 tid=7689] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:975 [pid=7655 tid=7669] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:975 [pid=7655 tid=7677] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:975 [pid=7655 tid=7685] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:26:975 [pid=7655 tid=7693] ERROR  0:58 NUMA not available
+ 20-02-2026 12:08:27:9 [pid=7655 tid=7655] ERROR  cufio-fs:204 NVMe Driver not registered with nvidia-fs!!!
+ 20-02-2026 12:08:27:10 [pid=7655 tid=7655] ERROR  cufio-fs:79 mount option not found in mount table data device: /dev/nvme7n1p2
+ 20-02-2026 12:08:27:10 [pid=7655 tid=7655] ERROR  cufio-fs:204 NVMe Driver not registered with nvidia-fs!!!
+ 20-02-2026 12:08:27:10 [pid=7655 tid=7655] NOTICE  cufio-fs:451 dumping volume attributes: DEVNAME:/dev/nvme7n1p2,ID_FS_TYPE:ext4,ID_FS_USAGE:filesystem,fsid:8e81b9f765cf410d0x,numa_node:-1,queue/logical_block_size:4096,wwid:eui.37393430589050770025384300000001,
+ 20-02-2026 12:08:27:10 [pid=7655 tid=7655] NOTICE  cufio:293 cuFileHandleRegister GDS not supported or disabled by config, using cuFile posix read/write with compat mode enabled
+ 20-02-2026 12:08:27:10 [pid=7655 tid=7655] ERROR  0:58 NUMA not available

@@ -13,7 +13,7 @@
 #include <cuda_runtime.h>
 #include <cufile.h>
 
-#define TEST_FILE "/tmp/kvbm_disk_cache/gds_test_file"
+#define TEST_FILE "/mnt/nvme/gds_test_file"
 #define BUF_SIZE  (4 * 1024 * 1024)  /* 4MB */
 #define CHECK_CUDA(call) do { \
     cudaError_t err = (call); \
